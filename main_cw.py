@@ -102,8 +102,9 @@ app = hy.HydraApp(title='城市气象分析App')
 @app.addapp(is_home=True)
 def my_home():
     hy.info('欢迎使用城市气象数据分析系统!')
+    hy.info('by 樊劲松 202309')
     st.balloons()  # 庆祝气球
-    st.toast('By fanjs. 2023')
+    st.toast('By fanjs. 202309')
     st.toast("今天是" + datetime.date.today().strftime("%Y-%m-%d"))
 
 @app.addapp(title='城市气象数据对比', icon="🏘")
@@ -256,9 +257,69 @@ def app3():
     else:
         save_button = st.button("💾保存更新数据", disabled=True)
 
+@app.addapp(title='数据排序', icon="🌏")
+def app4():
+    col1, col2, col3 = st.columns(3)
+
+    # 查询数据
+    df = pd.read_sql("select datetime,name_cn,temp,feelslike,humidity from cw_weather;", cw_db_engine)
+    df['datetime'] = pd.to_datetime(df['datetime'])
+    df.set_index('datetime', inplace=True)
+    df.sort_index(inplace=True)
+
+    with col1:
+        st.header("体感温度标准差")
+        # 计算体感温度标准差并排序
+        re_feelstemp = df.groupby('name_cn')['feelslike'].std().sort_values()
+        st.dataframe(re_feelstemp,use_container_width=True,hide_index=False,
+                     column_config={
+                         "name_cn": st.column_config.Column(
+                             "城市名称",
+                             width="small"
+                         ),
+                         "feelslike": st.column_config.Column(
+                             "体感温度",
+                             width="small"
+                         )
+                     })
+
+    with col2:
+        st.header("平均温度标准差")
+        # 计算平均体感温度标准差并排序
+        re_feelstemp1 = df.groupby('name_cn')['temp'].std().sort_values()
+        st.dataframe(re_feelstemp1,use_container_width=True,hide_index=False,
+                     column_config={
+                         "name_cn": st.column_config.Column(
+                             "城市名称",
+                             width="small"
+                         ),
+                         "temp": st.column_config.Column(
+                             "平均温度",
+                             width="small"
+                         )
+                     } )
+
+    with col3:
+        st.header("湿度标准差")
+        # 计算湿度标准差并排序
+        re_humidity = df.groupby('name_cn')['humidity'].std().sort_values()
+        st.dataframe(re_humidity,use_container_width=True,hide_index=False,
+                     column_config={
+                         "name_cn": st.column_config.Column(
+                             "城市名称",
+                             width="small"
+                         ),
+                         "humidity": st.column_config.Column(
+                             "湿度",
+                             width="small"
+                         )
+                     } )
+
+    # re_feelstemp.to_excel("C:/Users/fanjs/Downloads/城市体感温度_标准差.xlsx")
+    # re_humidity.to_excel("C:/Users/fanjs/Downloads/城市湿度_标准差.xlsx")
 
 @app.addapp(title='数据导入', icon="💽")
-def app4():
+def app5():
     last_days = 30
     # hy.info('数据源 https://www.visualcrossing.com/ 🥰  下载路径(CSV)：' + current_path + "\data_csv")
     hy.info('数据源 https://www.visualcrossing.com/ 🥰  下载路径(CSV)：'+  "../data_csv")
@@ -406,7 +467,7 @@ def app4():
         return
 
 @app.addapp(title='地图查询', icon="🌏")
-def app5():
+def app6():
     # 获取全部城市数据
     df_city = pd.read_sql("select * from city order by country,province;", cw_db_engine)
     df_city['longitude'] = df_city['longitude'].astype(float)
@@ -447,6 +508,10 @@ def app5():
     # c.render(saved_map_html_path)
 
     components.html(Map22Html, height=2000, width=5000)  # 在主页面用streamlit静态组件的方式渲染pyecharts
+
+
+
+
 
 
 

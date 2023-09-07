@@ -1,0 +1,10 @@
+{
+"path": {
+    "cw_path": "D:\\workcloud\\python_notebook\\city_weather_st\\",
+    "database_path": "D:/workcloud/python_notebook/city_weather_st/Dbs/city_weather_dbs.db",
+    "input_csv_path": "D:\\workcloud\\python_notebook\\city_weather_st\\data_csv\\",
+    "cw_data_website": "https://www.visualcrossing.com/weather-data"
+}
+
+
+}

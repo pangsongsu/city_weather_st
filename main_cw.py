@@ -20,15 +20,11 @@ import hydralit as hy  # when we import hydralit, we automatically get all of St
 # from pyecharts.faker import Faker
 # from streamlit_echarts import st_echarts
 
-cw_db_engine = create_engine(
-    (r"sqlite:///D:\\workcloud\\python_notebook\\city_weather_st\\Dbs\\city_weather_st_dbs.db"))
 
-cw_data_website = "https://www.visualcrossing.com/weather-data"
-
-# current_path = os.path.dirname(os.path.abspath(__file__))
 current_path = os.path.abspath(os.path.dirname(__file__))  # 获取当前文件所在目录的绝对路径
-# project_path = os.path.abspath(os.path.join(current_path, ".."))  # 获取当前项目的绝对路径
 
+cw_db_engine = create_engine("sqlite:///"+current_path+"\\Dbs\\city_weather_st_dbs.db")
+cw_data_website = "https://www.visualcrossing.com/weather-data"
 
 # 获取当前时间
 def get_current_time():
@@ -108,9 +104,6 @@ def my_home():
     st.balloons()  # 庆祝气球
     st.toast('By fanjs. 2023')
     st.toast("今天是" + datetime.date.today().strftime("%Y-%m-%d"))
-    # st.write(current_path)
-    # st.write(project_path)
-
 
 @app.addapp(title='城市气象数据对比', icon="🏘")
 def app2():

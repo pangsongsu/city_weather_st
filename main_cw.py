@@ -1,32 +1,24 @@
-# when we import hydralit, we automatically get all of Streamlit
 import pandas as pd
 import streamlit as st
-# import sqlite3
 from sqlalchemy import create_engine, text
 import datetime
 import time
-
 import os
-import win32gui, win32print, win32con, win32api
-
 from pyecharts.charts import Line
 from pyecharts.charts import Geo
+from pyecharts import options as opts
+from pyecharts.globals import ChartType
+import streamlit.components.v1 as components  # 将要展示的 弄成html
+import hydralit as hy  # when we import hydralit, we automatically get all of Streamlit
+# import win32gui, win32print, win32con, win32api
 # from pyecharts.charts import Kline
 # from pyecharts.charts import Bar
 # from streamlit_echarts import st_pyecharts
-
-from pyecharts.charts import Geo
-from pyecharts import options as opts
-from pyecharts.globals import ChartType, SymbolType
-
-from pyecharts import options as opts
-from pyecharts.charts import Map
-from pyecharts.globals import ChartType
-from pyecharts.faker import Faker
-from streamlit_echarts import st_echarts
-import streamlit.components.v1 as components  # 将要展示的 弄成html
-# when we import hydralit, we automatically get all of Streamlit
-import hydralit as hy
+# from pyecharts import options as opts
+# from pyecharts.globals import ChartType, SymbolType
+# from pyecharts.charts import Map
+# from pyecharts.faker import Faker
+# from streamlit_echarts import st_echarts
 
 cw_db_engine = create_engine(
     (r"sqlite:///D:\\workcloud\\python_notebook\\city_weather_st\\Dbs\\city_weather_st_dbs.db"))
@@ -35,8 +27,6 @@ cw_data_website = "https://www.visualcrossing.com/weather-data"
 
 # current_path = os.path.dirname(os.path.abspath(__file__))
 current_path = os.path.abspath(os.path.dirname(__file__))  # 获取当前文件所在目录的绝对路径
-
-
 # project_path = os.path.abspath(os.path.join(current_path, ".."))  # 获取当前项目的绝对路径
 
 
@@ -46,18 +36,18 @@ def get_current_time():
 
 
 ###获取缩放后的分辨率
-def get_screen_size():
-    width = win32api.GetSystemMetrics(0)
-    height = win32api.GetSystemMetrics(1)
-    return {"width": width, "height": height}
+# def get_screen_size():
+#     width = win32api.GetSystemMetrics(0)
+#     height = win32api.GetSystemMetrics(1)
+#     return {"width": width, "height": height}
 
 
 # 获取真实的分辨率
-def get_real_screen_resolution():
-    hDC = win32gui.GetDC(0)
-    width = win32print.GetDeviceCaps(hDC, win32con.DESKTOPHORZRES)
-    height = win32print.GetDeviceCaps(hDC, win32con.DESKTOPVERTRES)
-    return {"width": width, "height": height}
+# def get_real_screen_resolution():
+#     hDC = win32gui.GetDC(0)
+#     width = win32print.GetDeviceCaps(hDC, win32con.DESKTOPHORZRES)
+#     height = win32print.GetDeviceCaps(hDC, win32con.DESKTOPVERTRES)
+#     return {"width": width, "height": height}
 
 
 def color_cycle(colors):
@@ -105,14 +95,12 @@ def create_line_chart(df_w, city_seled, term_seled_en, term_seled_cn):
     return line
 
 
-screen_width = get_screen_size()["width"]
-screen_height = get_screen_size()["height"]
-
-chart_width = str(int(((screen_width * 5) / 6) - 300)) + "px"
-chart_height = str(int(screen_height - 300)) + "px"
+# screen_width = get_screen_size()["width"]
+# screen_height = get_screen_size()["height"]
+# chart_width = str(int(((screen_width * 5) / 6) - 300)) + "px"
+# chart_height = str(int(screen_height - 300)) + "px"
 
 app = hy.HydraApp(title='城市气象分析App')
-
 
 @app.addapp(is_home=True)
 def my_home():

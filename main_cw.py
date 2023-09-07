@@ -257,11 +257,11 @@ def app3():
         save_button = st.button("💾保存更新数据", disabled=True)
 
 
-@app.addapp(title='数据补充', icon="💽")
+@app.addapp(title='数据导入', icon="💽")
 def app4():
     last_days = 30
-    hy.info('数据源 https://www.visualcrossing.com/ 🥰  下载路径(CSV)：' + current_path + "\data_csv")
-
+    # hy.info('数据源 https://www.visualcrossing.com/ 🥰  下载路径(CSV)：' + current_path + "\data_csv")
+    hy.info('数据源 https://www.visualcrossing.com/ 🥰  下载路径(CSV)：'+  "../data_csv")
     # 获取全部城市数据
     df_city = pd.read_sql("select * from city order by country,province;", cw_db_engine)
     df_city['longitude'] = df_city['longitude'].astype(float)
@@ -360,11 +360,13 @@ def app4():
 
                  },
                  hide_index=False,
-                 height=300,
+                 height=350,
+                 use_container_width=True
                  )
 
     st.write("请先到数据源下载具体城市相关日期的数据csv文件,保存csv文件到以下路径,选择后导入数据。")
-    f_n_csv = st.selectbox(current_path + "\data_csv\\", os.listdir(current_path + "\\data_csv\\")[-5:])
+    # f_n_csv = st.selectbox(current_path + "\data_csv\\", os.listdir(current_path + "\\data_csv\\")[-5:])
+    f_n_csv = st.selectbox("../data_csv/", os.listdir("data_csv"))
 
     input_data_button = st.button("🛅导入气象数据", disabled=False)
 
@@ -394,7 +396,7 @@ def app4():
         city_name = df1.index[0]
         st.toast("正在读入[" + city_name + "]数据...")
         st.info("正在读入[" + city_name + "] " + fn[17:27] + " 至 " + fn[31:41] + " 数据...")
-        df_tmp = pd.read_csv(current_path + "\\data_csv\\" + f_n_csv, parse_dates=['datetime'], index_col="datetime")
+        df_tmp = pd.read_csv("data_csv/" + f_n_csv, parse_dates=['datetime'], index_col="datetime")
         df_tmp.sort_index(inplace=True)
         df_tmp['name_cn'] = city_name
 

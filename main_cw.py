@@ -30,18 +30,7 @@ import hydralit as hy
 
 cw_db_engine = create_engine(
     (r"sqlite:///D:\\workcloud\\python_notebook\\city_weather_st\\Dbs\\city_weather_st_dbs.db"))
-# # 获取全部城市数据
-# df_city = pd.read_sql("select * from city order by country,province;",cw_db_engine)
-# df_city['longitude'] = df_city['longitude'].astype(float)
-# df_city['latitude'] = df_city['latitude'].astype(float)
 
-# 获取全部气象指标名称（含中英文）
-# df_w = pd.read_sql("select * from cw_weather;", cw_db_engine)  # 只选第1个城市
-# df_w['datetime'] = pd.to_datetime(df_w['datetime']).dt.date
-# df_w.set_index('datetime', inplace=True)
-
-# # 获取全部气象指标名称（含中英文）
-# df_term = pd.read_sql("select * from term;", cw_db_engine)
 cw_data_website = "https://www.visualcrossing.com/weather-data"
 
 # current_path = os.path.dirname(os.path.abspath(__file__))

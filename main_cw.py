@@ -23,7 +23,8 @@ import hydralit as hy  # when we import hydralit, we automatically get all of St
 
 current_path = os.path.abspath(os.path.dirname(__file__))  # 获取当前文件所在目录的绝对路径
 
-cw_db_engine = create_engine("sqlite:///"+current_path+"\\Dbs\\city_weather_st_dbs.db")
+# cw_db_engine = create_engine("sqlite:///"+current_path+"\\Dbs\\city_weather_st_dbs.db")
+cw_db_engine = create_engine("sqlite:///city_weather_st_dbs.db")
 cw_data_website = "https://www.visualcrossing.com/weather-data"
 
 # 获取当前时间
@@ -126,8 +127,8 @@ def app2():
     else:
         generate_button = st.sidebar.button("📊展示气象数据图表", disabled=True)
 
-    saved_chart_html_path = st.sidebar.text_input('图表html保存路径:', current_path + "\\cw_weather_chart.html")
-
+    # saved_chart_html_path = st.sidebar.text_input('图表html保存路径:', current_path + "\\cw_weather_chart.html")
+    saved_chart_html_path = "cw_weather_chart.html"
     if generate_button:  # 按下按钮
         term_seled_en = term_seled[0:term_seled.find('|')]
         term_seled_cn = term_seled[term_seled.find('|') + 1:]

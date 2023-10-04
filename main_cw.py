@@ -10,6 +10,7 @@ from pyecharts import options as opts
 from pyecharts.globals import ChartType
 import streamlit.components.v1 as components  # 将要展示的 弄成html
 import hydralit as hy  # when we import hydralit, we automatically get all of Streamlit
+
 # import win32gui, win32print, win32con, win32api
 # from pyecharts.charts import Kline
 # from pyecharts.charts import Bar
@@ -26,6 +27,7 @@ current_path = os.path.abspath(os.path.dirname(__file__))  # 获取当前文件�
 # cw_db_engine = create_engine("sqlite:///"+current_path+"\\Dbs\\city_weather_st_dbs.db")
 cw_db_engine = create_engine("sqlite:///city_weather_st_dbs.db")
 cw_data_website = "https://www.visualcrossing.com/weather-data"
+
 
 # 获取当前时间
 def get_current_time():
@@ -99,6 +101,7 @@ def create_line_chart(df_w, city_seled, term_seled_en, term_seled_cn):
 
 app = hy.HydraApp(title='城市气象分析App')
 
+
 @app.addapp(is_home=True)
 def my_home():
     hy.info('欢迎使用城市气象数据分析系统!')
@@ -106,6 +109,7 @@ def my_home():
     st.balloons()  # 庆祝气球
     st.toast('By fanjs. 202309')
     st.toast("今天是" + datetime.date.today().strftime("%Y-%m-%d"))
+
 
 @app.addapp(title='城市气象数据对比', icon="🏘")
 def app2():
@@ -257,6 +261,7 @@ def app3():
     else:
         save_button = st.button("💾保存更新数据", disabled=True)
 
+
 @app.addapp(title='数据排序', icon="🌏")
 def app4():
     col1, col2, col3 = st.columns(3)
@@ -266,12 +271,12 @@ def app4():
     df['datetime'] = pd.to_datetime(df['datetime'])
     df.set_index('datetime', inplace=True)
     df.sort_index(inplace=True)
-
+    st.write(df)
     with col1:
         st.header("体感温度标准差")
         # 计算体感温度标准差并排序
         re_feelstemp = df.groupby('name_cn')['feelslike'].std().sort_values()
-        st.dataframe(re_feelstemp,use_container_width=True,hide_index=False,
+        st.dataframe(re_feelstemp, use_container_width=True, hide_index=False,
                      column_config={
                          "name_cn": st.column_config.Column(
                              "城市名称",
@@ -287,7 +292,7 @@ def app4():
         st.header("平均温度标准差")
         # 计算平均体感温度标准差并排序
         re_feelstemp1 = df.groupby('name_cn')['temp'].std().sort_values()
-        st.dataframe(re_feelstemp1,use_container_width=True,hide_index=False,
+        st.dataframe(re_feelstemp1, use_container_width=True, hide_index=False,
                      column_config={
                          "name_cn": st.column_config.Column(
                              "城市名称",
@@ -297,13 +302,13 @@ def app4():
                              "平均温度",
                              width="small"
                          )
-                     } )
+                     })
 
     with col3:
         st.header("湿度标准差")
         # 计算湿度标准差并排序
         re_humidity = df.groupby('name_cn')['humidity'].std().sort_values()
-        st.dataframe(re_humidity,use_container_width=True,hide_index=False,
+        st.dataframe(re_humidity, use_container_width=True, hide_index=False,
                      column_config={
                          "name_cn": st.column_config.Column(
                              "城市名称",
@@ -313,16 +318,17 @@ def app4():
                              "湿度",
                              width="small"
                          )
-                     } )
+                     })
 
     # re_feelstemp.to_excel("C:/Users/fanjs/Downloads/城市体感温度_标准差.xlsx")
     # re_humidity.to_excel("C:/Users/fanjs/Downloads/城市湿度_标准差.xlsx")
+
 
 @app.addapp(title='数据导入', icon="💽")
 def app5():
     last_days = 30
     # hy.info('数据源 https://www.visualcrossing.com/ 🥰  下载路径(CSV)：' + current_path + "\data_csv")
-    hy.info('数据源 https://www.visualcrossing.com/ 🥰  下载路径(CSV)：'+  "../data_csv")
+    hy.info('数据源 https://www.visualcrossing.com/ 🥰  下载路径(CSV)：' + "../data_csv")
     # 获取全部城市数据
     df_city = pd.read_sql("select * from city order by country,province;", cw_db_engine)
     df_city['longitude'] = df_city['longitude'].astype(float)
@@ -434,6 +440,7 @@ def app5():
     if input_data_button:
         fn = f_n_csv
         df_t = df_city[(df_city["position"] == fn[0:16])]
+
         if len(df_t) <= 0:
             st.error("没有找到该城市数据，请在city表新增后再上传文件", icon="🚨")
             st.toast('没有找到该城市数据，请在city表新增后再上传文件', icon="🚨")
@@ -444,14 +451,15 @@ def app5():
             d_n1 = datetime.datetime.strptime(fn[17:27], "%Y-%m-%d").date()
             d_n2 = datetime.datetime.strptime(fn[31:41], "%Y-%m-%d").date()
 
-            if d_o1 <= d_n1 <= d_o2:
-                st.error('日期在已有数据范围内,请重新下载', icon="🚨")
-                st.toast('日期在已有数据范围内,请重新下载', icon="🚨")
-                return
-            elif d_o1 <= d_n2 <= d_o2:
-                st.error('日期在已有数据范围内,请重新下载', icon="🚨")
-                st.toast('日期在已有数据范围内,请重新下载', icon="🚨")
-                return
+            if not pd.isna(df_t['date_min'].min()):   # 判断 是否是空值，如果原来就没有最早日期和最后日期就不做判断日期大小，而直接导入
+                if d_o1 <= d_n1 <= d_o2:
+                    st.error('日期在已有数据范围内,请重新下载', icon="🚨")
+                    st.toast('日期在已有数据范围内,请重新下载', icon="🚨")
+                    return
+                elif d_o1 <= d_n2 <= d_o2:
+                    st.error('日期在已有数据范围内,请重新下载', icon="🚨")
+                    st.toast('日期在已有数据范围内,请重新下载', icon="🚨")
+                    return
 
         df1 = df_city[(df_city['position'] == fn[0:16])]
         city_name = df1.index[0]
@@ -466,6 +474,7 @@ def app5():
         st.info("导入[" + city_name + "] " + fn[17:27] + " 至 " + fn[31:41] + " 数据完毕...")
         return
 
+
 @app.addapp(title='地图查询', icon="🌏")
 def app6():
     # 获取全部城市数据
@@ -475,20 +484,20 @@ def app6():
     df_city['altitude'] = df_city['altitude'].astype(float)
 
     location_list = df_city[['name_cn', 'longitude', 'latitude']].values.tolist()
-    altitude_list = df_city[['name_cn','altitude']].values.tolist()
+    altitude_list = df_city[['name_cn', 'altitude']].values.tolist()
     # 创建一个 Geo 图表
     geo = Geo(init_opts=opts.InitOpts(width="1900px", height="700px"))
     # 添加地图类型
-    geo.add_schema(maptype="world",center=[100.7830, 22],zoom=2)  # 西双版纳为中心视角
+    geo.add_schema(maptype="world", center=[100.7830, 22], zoom=2)  # 西双版纳为中心视角
 
     # 遍历经纬度数据框，并将经纬度添加到地图上
-    for name,longitude,latitude in location_list:
-        geo.add_coordinate(name,longitude,latitude)
+    for name, longitude, latitude in location_list:
+        geo.add_coordinate(name, longitude, latitude)
 
     # 遍历海报数据框，并将经纬度添加到地图上
     da_geo = []
-    for name,altitude in altitude_list:
-        da_geo.append((name,altitude))
+    for name, altitude in altitude_list:
+        da_geo.append((name, altitude))
 
     # # 添加坐标点
     # geo.add_coordinate("北京", 116.46, 39.92)
@@ -508,14 +517,6 @@ def app6():
     # c.render(saved_map_html_path)
 
     components.html(Map22Html, height=2000, width=5000)  # 在主页面用streamlit静态组件的方式渲染pyecharts
-
-
-
-
-
-
-
-
 
 
 # Run the whole lot, we get navbar, state management and app isolation, all with this tiny amount of work.

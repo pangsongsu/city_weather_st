@@ -271,7 +271,7 @@ def app4():
     df['datetime'] = pd.to_datetime(df['datetime'])
     df.set_index('datetime', inplace=True)
     df.sort_index(inplace=True)
-    st.write(df)
+    # st.write(df)
     with col1:
         st.header("体感温度标准差")
         # 计算体感温度标准差并排序

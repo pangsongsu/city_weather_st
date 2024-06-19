@@ -107,7 +107,7 @@ def my_home():
     hy.info('欢迎使用城市气象数据分析系统!')
     hy.info('by 樊劲松 202309')
     st.balloons()  # 庆祝气球
-    st.toast('By fanjs. 202309')
+    st.toast('By fanjs.. 202309')
     st.toast("今天是" + datetime.date.today().strftime("%Y-%m-%d"))
 
 
